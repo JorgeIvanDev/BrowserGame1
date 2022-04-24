@@ -1,2 +1,2 @@
-# spaceInvasion
+# browser game
 browsergame
