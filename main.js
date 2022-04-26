@@ -27,16 +27,21 @@ function setSize($element, width) {
     $element.style.width = `${width}px`;
     $element.style.height = "auto";
   }
-
-function bound(x){
+////
+function boundary(x){
+  function boundary1(x){
+    if(x >= GAME_WIDTH- STATE.character_width)
+        STATE.x_pos = GAME_WIDTH-STATE.character_width;
+        return STATE.x_pos
+    }
+function boundary1(x){
     if (x <= 0){
         STATE.x_pos = 0;
-        return STATE.x_pos
+        return 0
       } else {
         return x;
       }
-    }
-
+}
 
 // Player/Character
 function createPlayer($container) {
@@ -56,8 +61,10 @@ function updatePlayer(){
     } if(STATE.move_right){
         STATE.x_pos += 5;
     } 
+    /// boundary stops it from right, boundary1 stop it at left.!!!//
     const $player = document.querySelector(".player");
-    setPosition($player, bound(STATE.x_pos), STATE.y_pos);
+    setPosition($player, boundary(STATE.x_pos), STATE.y_pos);
+    setPosition($player, boundary1(STATE.x_pos), STATE.y_pos);
 }
 
 
