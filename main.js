@@ -47,6 +47,10 @@ function boundary1(x){
 }
 
 // Player/Character
+// 1) created the owl image element
+// 2) appended it to the main container
+// 3) set the position of the owl image
+// 4) set the size of the owl image
 function createPlayer($container) {
     STATE.x_pos = GAME_WIDTH / 2.35;
     STATE.y_pos = GAME_HEIGHT - 97;
@@ -66,8 +70,8 @@ function updatePlayer(){
     } 
     /// boundary stops it from right, boundary1 stop it at left.!!!//
     const $player = document.querySelector(".player");
-    setPosition($player, boundary(STATE.x_pos), STATE.y_pos);
-    setPosition($player, boundary1(STATE.x_pos), STATE.y_pos);
+    setPosition($player, boundary(STATE.x_pos), STATE.y_pos -15);
+    setPosition($player, boundary1(STATE.x_pos), STATE.y_pos - 15);
 }
 
 
@@ -77,21 +81,36 @@ function createEnemy($container, x,y){
      $enemy.src = "images/fallinbaby.png";
      $enemy.className = "enemy";
      $container.appendChild($enemy);
-     const enemy = {x, y, $enemy}
+     const enemy = {x, y, $enemy, falling_rate: Math.floor(Math.random() * 150)}
      STATE.enemies.push(enemy);
      setSize($enemy, STATE.enemy_width);
      setPosition($enemy, x, y);
 }
 
 function updateEnemies($container){
-  const dx = Math.sin(Date.now()/1000)*40;
-  const dy = Math.cos(Date.now()/1000)*30;
+  const dx = 0
+  const dy = -.05
   const enemies = STATE.enemies;
+
+  const $player = document.querySelector(".player")
+  const player_height = $player.height
+  const player_width = $player.width
   for (let i = 0; i < enemies.length; i++){
     const enemy = enemies[i];
     var a = enemy.x + dx;
-    var b = enemy.y + dy;
-    setPosition(enemy.$enemy, a, b);
+    enemy.y = enemy.y - dy * enemy.falling_rate
+    setPosition(enemy.$enemy, a, enemy.y);
+    if (
+      Math.abs(($player.getBoundingClientRect().top - enemy.$enemy.getBoundingClientRect().bottom)) <= 10
+      && Math.abs($player.getBoundingClientRect().x - enemy.$enemy.getBoundingClientRect().x) <= 50
+      ){
+        enemy.$enemy.style.display = 'none'
+      }
+
+      if ( enemy.y > GAME_HEIGHT + enemy.$enemy.height){
+        enemy.y = 0
+        setPosition(enemy.$enemy, a, enemy.y)
+      }
   }
 }
 
@@ -135,6 +154,7 @@ function update(){
   //INITIALIZING GAME//
   //SELECTING CONTAINER TO CREATE GAME, IN .main  DIV, SET CONTAINER EQUAL TO NODE .main
 const $container = document.querySelector(".main");
+
 createPlayer($container);
 createEnemies($container);
 
