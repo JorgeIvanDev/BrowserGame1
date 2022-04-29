@@ -16,7 +16,7 @@ const STATE = {
     enemy_width: 50,
     enemies: [],
     number_of_enemies: 8,
-
+    gameOver : false,
 }
 
 
@@ -45,6 +45,7 @@ function boundary1(x){
         return x;
       }
 }
+
 
 // Player/Character
 // 1) created the owl image element
@@ -78,7 +79,7 @@ function updatePlayer(){
 // Enemies
 function createEnemy($container, x,y){
     const $enemy = document.createElement("img");
-     $enemy.src = "images/fallinbaby.png";
+     $enemy.src = "images/fallenAngel.png";
      $enemy.className = "enemy";
      $container.appendChild($enemy);
      const enemy = {x, y, $enemy, falling_rate: Math.floor(Math.random() * 150)}
@@ -106,11 +107,13 @@ function updateEnemies($container){
       ){
         enemy.$enemy.style.display = 'none'
       }
+        //STATE.gameOver = true;
 
       if ( enemy.y > GAME_HEIGHT + enemy.$enemy.height){
         enemy.y = 0
         setPosition(enemy.$enemy, a, enemy.y)
       }
+      
   }
 }
 
@@ -149,7 +152,14 @@ function update(){
     updateEnemies();
 
     window.requestAnimationFrame(update)
-}
+
+    if (STATE.gameOver){
+      document.querySelector(".lose").style.display = "block";
+    } if (STATE.enemies.lenght == 0){
+      document.querySelector(".win").style.display = "block"
+    }
+
+  }
 
   //INITIALIZING GAME//
   //SELECTING CONTAINER TO CREATE GAME, IN .main  DIV, SET CONTAINER EQUAL TO NODE .main
@@ -166,3 +176,58 @@ window.addEventListener("keyup", KeyRelease);
 update();
 
 
+"use strict";
+
+let hour = 0;
+let minute = 0;
+let second = 0;
+let millisecond = 0;
+
+let cron;
+
+document.form_main.start.onclick = () => start();
+document.form_main.pause.onclick = () => pause();
+document.form_main.reset.onclick = () => reset();
+
+function start() {
+  pause();
+  cron = setInterval(() => { timer(); }, 10);
+}
+
+function pause() {
+  clearInterval(cron);
+}
+
+function reset() {
+  hour = 0;
+  minute = 0;
+  second = 0;
+  millisecond = 0;
+  document.getElementById('hour').innerText = '00';
+  document.getElementById('minute').innerText = '00';
+  document.getElementById('second').innerText = '00';
+  document.getElementById('millisecond').innerText = '000';
+}
+
+function timer() {
+  if ((millisecond += 10) == 1000) {
+    millisecond = 0;
+    second++;
+  }
+  if (second == 60) {
+    second = 0;
+    minute++;
+  }
+  if (minute == 60) {
+    minute = 0;
+    hour++;
+  }
+  document.getElementById('hour').innerText = returnData(hour);
+  document.getElementById('minute').innerText = returnData(minute);
+  document.getElementById('second').innerText = returnData(second);
+  document.getElementById('millisecond').innerText = returnData(millisecond);
+}
+
+function returnData(input) {
+  return input > 10 ? input : `0${input}`
+}

@@ -6,17 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Broswer Game</title>
     <link rel="stylesheet" href="style.css">
+    
 </head>
 <body>
+    
+    <audio src="sounds/fireAND_rooster.mp3.m4a" id="background_audio" loop="loop" autoplay="autoplay"></audio>
+    <script type="text/javascript">
+        window.onload= function(){
+            document.getElementById("background_audio").play();
+        }
+    </script>
     <div class="wrap">
+        
         <header>Watch Out</header>
+        
         <div class="game-wrapper">
+            <form name="form_main">
+                <div>
+                  <span id="hour">00</span>:<span id="minute">00</span>:<span id="second">00</span>:<span id="millisecond">000</span>
+                </div>
+              
+              
+                <button type="button" name="start">start</button>
+                <button type="button" name="pause">pause</button>
+                <button type="button" name="reset">reset</button>
+              </form>
             <div class="main"></div>
+                <div class = "win">
+                    <h1> YOU WIN!</h1>
+                    <h2>You have saved humanity!</h2>
+                    <button class="btn" onclick="window.location.reload()">Restart</button>
+                </div>
+                <div class = "lose">
+                    <h1> Game over!</h1>
+                    <h2>Please try again later!</h2>
+                    <button class="btn" onclick="window.location.reload()">Restart</button>
+                </div>
+
 
                 
         </div>
         <script src="main.js"></script>
-        <footer></footer>
+        <footer><img src="images/firefooter.png" alt="" class=""></footer>
     </div>
+    
 </body>
 </html>
