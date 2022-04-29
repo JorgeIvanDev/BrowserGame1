@@ -9,13 +9,10 @@
     
 </head>
 <body>
-    
-    <audio src="sounds/fireAND_rooster.mp3.m4a" id="background_audio" loop="loop" autoplay="autoplay"></audio>
-    <script type="text/javascript">
-        window.onload= function(){
-            document.getElementById("background_audio").play();
-        }
-    </script>
+
+    <audio id="audio">
+      <source src="https://docs.google.com/uc?export=download&id=1bQFlU1tKn56RE76kOcW502ALCGIkkCpY"
+      ></audio>
     <div class="wrap">
         
         <header>Watch Out</header>
@@ -35,11 +32,13 @@
                 <div class = "win">
                     <h1> YOU WIN!</h1>
                     <h2>You have saved humanity!</h2>
+                    <h2 class="score"></h2>
                     <button class="btn" onclick="window.location.reload()">Restart</button>
                 </div>
                 <div class = "lose">
                     <h1> Game over!</h1>
                     <h2>Please try again later!</h2>
+                    <h2 class="score_lose"></h2>
                     <button class="btn" onclick="window.location.reload()">Restart</button>
                 </div>
 

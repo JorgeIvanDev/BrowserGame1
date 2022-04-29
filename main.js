@@ -15,8 +15,13 @@ const STATE = {
     character_width : 100,
     enemy_width: 50,
     enemies: [],
-    number_of_enemies: 8,
+    number_of_enemies: 5,
     gameOver : false,
+    start: false,
+    seconds: 0,
+    minutes: 0,
+    num_caught_babies: 0,
+    score: 0
 }
 
 
@@ -55,10 +60,14 @@ function boundary1(x){
 function createPlayer($container) {
     STATE.x_pos = GAME_WIDTH / 2.35;
     STATE.y_pos = GAME_HEIGHT - 97;
+
+    // create player image and 
     const $player = document.createElement("img");
     $player.src = "images/owl.png";
     $player.className = "player";
+    // and add it to the html doc
     $container.appendChild($player);
+
     setPosition($player, STATE.x_pos, STATE.y_pos);
     setSize($player, STATE.character_width);
   }
@@ -78,14 +87,42 @@ function updatePlayer(){
 
 // Enemies
 function createEnemy($container, x,y){
-    const $enemy = document.createElement("img");
+     // create a baby image
+     const $enemy = document.createElement("img");
      $enemy.src = "images/fallenAngel.png";
      $enemy.className = "enemy";
+     // add the baby image to the html doc
      $container.appendChild($enemy);
+
+    // set the initial data for each baby
+    // and add it to state
      const enemy = {x, y, $enemy, falling_rate: Math.floor(Math.random() * 150)}
      STATE.enemies.push(enemy);
+
      setSize($enemy, STATE.enemy_width);
      setPosition($enemy, x, y);
+}
+
+// if the game is over, then show them the "lose"
+// pop-up and the losing message
+function show_game_over(text_content) {
+  const $score_lose = document.querySelector('.score_lose')
+  $score_lose.textContent = text_content
+  document.querySelector(".lose").style.display = "block";
+  return
+}
+
+
+function check_for_timeout(){
+  if ( STATE.seconds >= 30) {
+    pause()
+    // const $score_lose = document.querySelector('.score_lose')
+    // $score_lose.textContent = "Sorry! You ran out of time"
+    // document.querySelector(".lose").style.display = "block";
+    show_game_over("Sorry! You ran out of time")
+    return
+  }
+  return
 }
 
 function updateEnemies($container){
@@ -93,33 +130,99 @@ function updateEnemies($container){
   const dy = -.05
   const enemies = STATE.enemies;
 
-  const $player = document.querySelector(".player")
-  const player_height = $player.height
-  const player_width = $player.width
-  for (let i = 0; i < enemies.length; i++){
-    const enemy = enemies[i];
-    var a = enemy.x + dx;
-    enemy.y = enemy.y - dy * enemy.falling_rate
-    setPosition(enemy.$enemy, a, enemy.y);
-    if (
-      Math.abs(($player.getBoundingClientRect().top - enemy.$enemy.getBoundingClientRect().bottom)) <= 10
-      && Math.abs($player.getBoundingClientRect().x - enemy.$enemy.getBoundingClientRect().x) <= 50
-      ){
-        enemy.$enemy.style.display = 'none'
-      }
-        //STATE.gameOver = true;
+  // if a certain amount of time has passed and the player
+  // has not yet caught all of the babies, then 
+  // tell them they timed out and end the game
+  check_for_timeout()
 
-      if ( enemy.y > GAME_HEIGHT + enemy.$enemy.height){
-        enemy.y = 0
-        setPosition(enemy.$enemy, a, enemy.y)
+  const $player = document.querySelector(".player")
+
+  // if start is true, the game should run
+  // otherwise, the babies shouldn't fall
+  if (STATE.start == true) {
+      for (let i = 0; i < enemies.length; i++){
+
+        const enemy = enemies[i];
+        // set the baby's x coordinates (x doesn't change for this iteration)
+        var a = enemy.x + dx;
+
+        // animate the baby down by a certain amount
+        // depending on what their falling_rate is.
+        // The higher the falling_rate, the faster
+        // they fall
+        enemy.y = enemy.y - dy * enemy.falling_rate
+        setPosition(enemy.$enemy, a, enemy.y);
+
+        // if this baby is close to the owl (player)
+        // then we can say the baby was caught.
+        // So if the baby's x and y coordinates are close
+        // to the player's --> baby was caught
+        if (
+          Math.abs(($player.getBoundingClientRect().top - enemy.$enemy.getBoundingClientRect().bottom)) <= 10
+          && Math.abs($player.getBoundingClientRect().x - enemy.$enemy.getBoundingClientRect().x) <= 50
+          ){
+            // hide the baby after it's caught
+            enemy.$enemy.style.display = 'none'
+            // increment the # of babies caught so far
+            STATE.num_caught_babies++
+
+            // if the num_caught_babies is = the # of 
+            // babies in the beginning of the game,
+            // they have caught all of the babies
+            if(STATE.num_caught_babies === STATE.number_of_enemies){
+              // if the player has caught all babies,
+              // pause the game and then calculate their score
+              pause()
+              const $score = document.querySelector('.score')
+
+              if( STATE.seconds <= 10 ) {
+                // if the player catches all babies w/in
+                // this amount of time, set the score to be 100 
+                // and tell them they won
+                STATE.score = 100
+                $score.textContent = "Top Score: " + STATE.score
+                document.querySelector(".win").style.display = "block"
+              } else if ( STATE.seconds <= 22 ) {
+                // if the player catches all babies w/in
+                // this amount of time, set the score to 75
+                // and tell them they won
+                STATE.score = 75
+                $score.textContent = "Score: " + STATE.score
+                document.querySelector(".win").style.display = "block"
+              } else {
+
+                // if player catches all babies, but
+                // takes a long time, they get a score of 0
+                // and the game ends
+
+                STATE.score = 0
+                show_game_over("Score: " + STATE.score)
+                // const $score_lose = document.querySelector('.score_lose')
+                // $score_lose.textContent = "Score: " + STATE.score
+                // document.querySelector(".lose").style.display = "block";
+                //STATE.gameOver = true; 
+              }
+
+            }
+          }
+            
+          // if the baby falls into the fire, send it back
+          // to the top of the screen
+          if ( enemy.y > GAME_HEIGHT + enemy.$enemy.height){
+            enemy.y = 0
+            setPosition(enemy.$enemy, a, enemy.y)
+          }
+          
       }
-      
+  }
+  else {
+    return
   }
 }
 
 //1st for loop creates first row of enemies, x and y coordinates in firstn and secon row different//
 function createEnemies($container){
-  for (let i = 0; i<= STATE.number_of_enemies/2; i++){
+  for (let i = 0; i<= STATE.number_of_enemies - 1; i++){
     createEnemy($container, i*80, 100);
   }
 }
@@ -153,12 +256,6 @@ function update(){
 
     window.requestAnimationFrame(update)
 
-    if (STATE.gameOver){
-      document.querySelector(".lose").style.display = "block";
-    } if (STATE.enemies.lenght == 0){
-      document.querySelector(".win").style.display = "block"
-    }
-
   }
 
   //INITIALIZING GAME//
@@ -191,10 +288,33 @@ document.form_main.reset.onclick = () => reset();
 
 function start() {
   pause();
+
+  // starts the baby animation
+  STATE.start = true
+  
+  // start the background animation
+  const $main = document.querySelector('.main')
+  $main.style.animation = 'scroll-background 1.7s linear infinite'
+
+  // play the audio
+  const $audio = document.getElementById("audio")
+  $audio.play()
+
   cron = setInterval(() => { timer(); }, 10);
 }
 
 function pause() {
+  // this stops the baby animation
+  STATE.start = false
+
+  // stop the background from animating
+  const $main = document.querySelector('.main')
+  $main.style.animation = 'none'
+
+  // pauses the audio
+  const $audio = document.getElementById("audio")
+  $audio.pause()
+
   clearInterval(cron);
 }
 
@@ -207,6 +327,8 @@ function reset() {
   document.getElementById('minute').innerText = '00';
   document.getElementById('second').innerText = '00';
   document.getElementById('millisecond').innerText = '000';
+
+  window.location.reload()
 }
 
 function timer() {
@@ -222,6 +344,12 @@ function timer() {
     minute = 0;
     hour++;
   }
+
+  // Add time information to state for reference later
+  // (during the win/lose if statements)
+  STATE.seconds = second
+  STATE.minutes = minute
+
   document.getElementById('hour').innerText = returnData(hour);
   document.getElementById('minute').innerText = returnData(minute);
   document.getElementById('second').innerText = returnData(second);
