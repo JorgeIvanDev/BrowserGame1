@@ -63,7 +63,7 @@ function createPlayer($container) {
 
     // create player image and 
     const $player = document.createElement("img");
-    $player.src = "images/owl.png";
+    $player.src = "images/catchingCharacter1a.png";
     $player.className = "player";
     // and add it to the html doc
     $container.appendChild($player);
