@@ -62,7 +62,7 @@ footer {
 .lose {
     display: none;
     position: absolute;
-    background: greenyellow;
+    background: rgb(13, 16, 8);
     color: red;
     padding: 20px 75px;
     box-shadow: 0 2px 10px yellow;
@@ -74,7 +74,7 @@ footer {
 .win {
   display: none;
   position: absolute;
-  background: orangered;
+  background: rgb(127, 73, 53);
   color: red;
   padding: 20px 75px;
   box-shadow: 0 2px 10px yellow;
@@ -83,3 +83,24 @@ footer {
   animation: pop-in 1s;
 }
 
+.container {
+          position: relative;
+          text-align: center;
+          color: white;
+        }
+        
+.centered {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+        }
+
+.centered1 {
+          position: absolute;
+          top: 30%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 30px;
+      }
