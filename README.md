@@ -4,7 +4,7 @@ browsergame
 game inspired by two different games;  SPY HUNTER and SPACE INVASION
 ITs a very simple game of catching my son.
 
-move rifht and left using arrows.
+move right and left using arrows.
 
 use mouse to click start on timer, which start parameters for score. 
 
@@ -20,3 +20,6 @@ HAD HELP FROM PERSONAL FREIND, MENTOR, AND CODER AQUAINTANCE.(THIS WAS HUGE HELP
 
 BUTTON KEYS
 https://www.oreilly.com/library/view/javascript-dhtml/9780596514082/apb.html
+
+
+all images and sounds are from my personal inventory.
